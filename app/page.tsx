@@ -8,6 +8,7 @@ import { Badge } from "./_components/ui/badge"
 import { Avatar, AvatarImage } from "./_components/ui/avatar"
 import { db } from "./_lib/prisma"
 import BarbershopItem from "./_components/barbershop-item"
+import { quickSearchOptions } from "./_constants/search-options"
 
 const Home = async () => {
   const barberShops = await db.barbershop.findMany({})
@@ -34,31 +35,17 @@ const Home = async () => {
 
         {/* buscar rapida */}
         <div className="mt-6 flex gap-3 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
-          <Button className="gap-2" variant="secondary">
-            <Image src="/beard.svg" width={16} height={16} alt="Barba" />
-            Barba
-          </Button>
-          <Button className="gap-2" variant="secondary">
-            <Image src="/hair.svg" width={16} height={16} alt="Cabelo" />
-            Cabelo
-          </Button>
-          <Button className="gap-2" variant="secondary">
-            <Image src="/retouching.svg" width={16} height={16} alt="Retoque" />
-            Retoque
-          </Button>
-          <Button className="gap-2" variant="secondary">
-            <Image
-              src="/eyebrow.svg"
-              width={16}
-              height={16}
-              alt="Sobrancelha"
-            />
-            Sobrancelha
-          </Button>
-          <Button className="gap-2" variant="secondary">
-            <Image src="/paint.svg" width={16} height={16} alt="Pintar" />
-            Pintar
-          </Button>
+          {quickSearchOptions.map((option) => (
+            <Button className="gap-2" variant="secondary" key={option.title}>
+              <Image
+                src={option.imageUrl}
+                width={16}
+                height={16}
+                alt={option.title}
+              />
+              {option.title}
+            </Button>
+          ))}
         </div>
 
         {/* BANNER */}
