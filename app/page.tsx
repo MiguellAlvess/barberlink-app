@@ -11,6 +11,11 @@ import BarbershopItem from "./_components/barbershop-item"
 
 const Home = async () => {
   const barberShops = await db.barbershop.findMany({})
+  const popularBarbershops = await db.barbershop.findMany({
+    orderBy: {
+      name: "desc",
+    },
+  })
   return (
     <div>
       <Header />
@@ -24,6 +29,35 @@ const Home = async () => {
           <Input placeholder="O que você procura?" />
           <Button>
             <SearchIcon />
+          </Button>
+        </div>
+
+        {/* buscar rapida */}
+        <div className="mt-6 flex gap-3 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
+          <Button className="gap-2" variant="secondary">
+            <Image src="/beard.svg" width={16} height={16} alt="Barba" />
+            Barba
+          </Button>
+          <Button className="gap-2" variant="secondary">
+            <Image src="/hair.svg" width={16} height={16} alt="Cabelo" />
+            Cabelo
+          </Button>
+          <Button className="gap-2" variant="secondary">
+            <Image src="/retouching.svg" width={16} height={16} alt="Retoque" />
+            Retoque
+          </Button>
+          <Button className="gap-2" variant="secondary">
+            <Image
+              src="/eyebrow.svg"
+              width={16}
+              height={16}
+              alt="Sobrancelha"
+            />
+            Sobrancelha
+          </Button>
+          <Button className="gap-2" variant="secondary">
+            <Image src="/paint.svg" width={16} height={16} alt="Pintar" />
+            Pintar
           </Button>
         </div>
 
@@ -62,6 +96,7 @@ const Home = async () => {
           </CardContent>
         </Card>
 
+        {/* RECOMENDADOS */}
         <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
           Recomendados
         </h2>
@@ -70,7 +105,26 @@ const Home = async () => {
             <BarbershopItem key={barberShops.id} barbershop={barberShops} />
           ))}
         </div>
+
+        {/* POPULARES */}
+        <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
+          Recomendados
+        </h2>
+        <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
+          {popularBarbershops.map((barberShops) => (
+            <BarbershopItem key={barberShops.id} barbershop={barberShops} />
+          ))}
+        </div>
       </div>
+      <footer>
+        <Card className="flex items-center justify-center px-5 py-6">
+          <CardContent>
+            <p className="text-sm text-gray-400">
+              © 2025 Copyright <span className="font-bold">BarberLink</span>
+            </p>
+          </CardContent>
+        </Card>
+      </footer>
     </div>
   )
 }
