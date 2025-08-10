@@ -33,9 +33,9 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border antialiased;
   }
   body {
-    @apply bg-background text-foreground flex h-screen flex-col antialiased;
+    @apply flex h-screen flex-col bg-background text-foreground antialiased;
   }
 }
