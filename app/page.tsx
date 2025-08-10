@@ -9,14 +9,12 @@ import { Avatar, AvatarImage } from "./_components/ui/avatar"
 import { db } from "./_lib/prisma"
 import BarbershopItem from "./_components/barbershop-item"
 import { quickSearchOptions } from "./_constants/search-options"
+import { getBarbershops } from "./_data_access/barbershops/get-barbershops"
+import { getPopularBarbershops } from "./_data_access/barbershops/get-popularbarbershops"
 
 const Home = async () => {
-  const barberShops = await db.barbershop.findMany({})
-  const popularBarbershops = await db.barbershop.findMany({
-    orderBy: {
-      name: "desc",
-    },
-  })
+  const barberShops = await getBarbershops()
+  const popularBarbershops = await getPopularBarbershops()
   return (
     <div>
       <Header />
