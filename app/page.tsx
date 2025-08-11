@@ -6,7 +6,6 @@ import Image from "next/image"
 import { Card, CardContent } from "./_components/ui/card"
 import { Badge } from "./_components/ui/badge"
 import { Avatar, AvatarImage } from "./_components/ui/avatar"
-import { db } from "./_lib/prisma"
 import BarbershopItem from "./_components/barbershop-item"
 import { quickSearchOptions } from "./_constants/search-options"
 import { getBarbershops } from "./_data_access/barbershops/get-barbershops"
@@ -101,15 +100,6 @@ const Home = async () => {
           ))}
         </div>
       </div>
-      <footer>
-        <Card className="flex items-center justify-center px-5 py-6">
-          <CardContent>
-            <p className="text-sm text-gray-400">
-              © 2025 Copyright <span className="font-bold">BarberLink</span>
-            </p>
-          </CardContent>
-        </Card>
-      </footer>
     </div>
   )
 }
