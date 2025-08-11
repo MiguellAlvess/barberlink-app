@@ -10,6 +10,7 @@ import BarbershopItem from "./_components/barbershop-item"
 import { quickSearchOptions } from "./_constants/search-options"
 import { getBarbershops } from "./_data_access/barbershops/get-barbershops"
 import { getPopularBarbershops } from "./_data_access/barbershops/get-popularbarbershops"
+import Search from "./_components/search"
 
 const Home = async () => {
   const barberShops = await getBarbershops()
@@ -23,11 +24,8 @@ const Home = async () => {
         <p>Domingo, 08 de agosto</p>
 
         {/* BUSCA */}
-        <div className="mt-6 flex items-center gap-2">
-          <Input placeholder="O que você procura?" />
-          <Button>
-            <SearchIcon />
-          </Button>
+        <div className="mt-6">
+          <Search />
         </div>
 
         {/* buscar rapida */}
