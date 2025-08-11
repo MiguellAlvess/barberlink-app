@@ -1,7 +1,5 @@
-import { SearchIcon } from "lucide-react"
 import Header from "./_components/header"
 import { Button } from "./_components/ui/button"
-import { Input } from "./_components/ui/input"
 import Image from "next/image"
 import { Card, CardContent } from "./_components/ui/card"
 import { Badge } from "./_components/ui/badge"
@@ -11,6 +9,8 @@ import { quickSearchOptions } from "./_constants/search-options"
 import { getBarbershops } from "./_data_access/barbershops/get-barbershops"
 import { getPopularBarbershops } from "./_data_access/barbershops/get-popularbarbershops"
 import Search from "./_components/search"
+import Link from "next/link"
+import { SheetClose } from "./_components/ui/sheet"
 
 const Home = async () => {
   const barberShops = await getBarbershops()
@@ -31,14 +31,21 @@ const Home = async () => {
         {/* buscar rapida */}
         <div className="mt-6 flex gap-3 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
           {quickSearchOptions.map((option) => (
-            <Button className="gap-2" variant="secondary" key={option.title}>
-              <Image
-                src={option.imageUrl}
-                width={16}
-                height={16}
-                alt={option.title}
-              />
-              {option.title}
+            <Button
+              className="gap-2"
+              variant="secondary"
+              key={option.title}
+              asChild
+            >
+              <Link href={`/barbershops?search=${option.title}`}>
+                <Image
+                  src={option.imageUrl}
+                  width={16}
+                  height={16}
+                  alt={option.title}
+                />
+                {option.title}
+              </Link>
             </Button>
           ))}
         </div>
