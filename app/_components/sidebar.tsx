@@ -7,21 +7,13 @@ import { Button } from "./ui/button"
 import { SheetClose, SheetContent, SheetHeader, SheetTitle } from "./ui/sheet"
 import Image from "next/image"
 import Link from "next/link"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog"
-import { signIn, signOut, useSession } from "next-auth/react"
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog"
+import { signOut, useSession } from "next-auth/react"
+import SignInDialog from "./sign-in-dialog"
 
 const Sidebar = () => {
   const { data } = useSession()
-  const handleLoginWithGoogleClick = async () => {
-    await signIn("google")
-  }
+
   const handleLogoutClick = async () => {
     await signOut()
   }
@@ -51,27 +43,7 @@ const Sidebar = () => {
                 </Button>
               </DialogTrigger>
               <DialogContent className="w-[85%]">
-                <DialogHeader className="flex items-center justify-center">
-                  <DialogTitle className="font-bold">
-                    Faça login na plataforma
-                  </DialogTitle>
-                  <DialogDescription>
-                    Entre com sua conta do Google
-                  </DialogDescription>
-                </DialogHeader>
-                <Button
-                  variant="outline"
-                  className="gap-1 font-semibold"
-                  onClick={handleLoginWithGoogleClick}
-                >
-                  <Image
-                    src="/google.svg"
-                    alt="Google Logo"
-                    width={16}
-                    height={16}
-                  />
-                  Google
-                </Button>
+                <SignInDialog />
               </DialogContent>
             </Dialog>
           </>
