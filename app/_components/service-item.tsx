@@ -76,7 +76,8 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
       })
       await createBooking({
         serviceId: service.id,
-        userId: "cme7ikza70000tq9p0lwa7f9h",
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        userId: (data?.user as any).id,
         date: newDate,
       })
       toast.success("Sua reserva foi feita com sucesso!")
@@ -215,7 +216,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                   )}
                 </div>
 
-                <SheetFooter className="px-5">
+                <SheetFooter className="mt-5 px-5">
                   <SheetClose asChild>
                     <Button
                       onClick={handleCreateBooking}
