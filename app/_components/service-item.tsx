@@ -1,55 +1,47 @@
 "use client"
 
-import { Barbershop, BarbershopService } from "@prisma/client"
+import { Barbershop, BarbershopService, Booking } from "@prisma/client"
 import Image from "next/image"
 import { Button } from "./ui/button"
 import { Card, CardContent } from "./ui/card"
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "./ui/sheet"
 import { Calendar } from "./ui/calendar"
 import { ptBR } from "date-fns/locale"
-import { useState } from "react"
-import { format, set, setHours, setMinutes } from "date-fns"
-import { createBooking } from "../_actions/create-booking"
+import { useEffect, useState } from "react"
+import { addDays, format, set } from "date-fns"
+
 import { useSession } from "next-auth/react"
 import { toast } from "sonner"
+import { getBookings } from "../_actions/booking/get-bookings"
+import { createBooking } from "../_actions/booking/create-booking"
+import { TIME_LIST } from "../_constants/time-list"
 
 interface ServiceItemProps {
   service: BarbershopService
   barbershop: Pick<Barbershop, "name">
 }
 
-const TIME_LIST = [
-  "08:00",
-  "08:30",
-  "09:00",
-  "09:30",
-  "10:00",
-  "10:30",
-  "11:00",
-  "11:30",
-  "12:00",
-  "12:30",
-  "13:00",
-  "13:30",
-  "14:00",
-  "14:30",
-  "15:00",
-  "15:30",
-  "16:00",
-  "16:30",
-  "17:00",
-  "17:30",
-  "18:00",
-  "18:30",
-]
+const getTimeList = (bookings: Booking[]) => {
+  return TIME_LIST.filter((time) => {
+    const hour = Number(time.split(":")[0])
+    const minutes = Number(time.split(":")[1])
+    const hasBookingOnCurrentTime = bookings.some(
+      (booking) =>
+        booking.date.getHours() === hour &&
+        booking.date.getMinutes() === minutes,
+    )
+    if (hasBookingOnCurrentTime) {
+      return false
+    }
+    return true
+  })
+}
 
 const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
   const { data } = useSession()
@@ -57,6 +49,28 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
   const [selectedTime, setSelectedTime] = useState<string | undefined>(
     undefined,
   )
+  const [dayBookings, setDayBookings] = useState<Booking[]>([])
+  const [bookingSheetIsOpen, setBookingSheetIsOpen] = useState(false)
+
+  useEffect(() => {
+    const fetch = async () => {
+      if (!selectedDay) return
+      const bookings = await getBookings({
+        date: selectedDay,
+        serviceId: service.id,
+      })
+      setDayBookings(bookings)
+    }
+    fetch()
+  }, [selectedDay, service.id])
+
+  const handleBookingSheetOpenChange = () => {
+    setSelectedDay(undefined)
+    setSelectedTime(undefined)
+    setDayBookings([])
+    setBookingSheetIsOpen(false)
+  }
+
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDay(date)
   }
@@ -80,6 +94,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
         userId: (data?.user as any).id,
         date: newDate,
       })
+      handleBookingSheetOpenChange()
       toast.success("Sua reserva foi feita com sucesso!")
     } catch (error) {
       toast.error("Erro ao reservar horário!")
@@ -90,7 +105,6 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
   return (
     <Card className="rounded-xl">
       <CardContent className="flex items-center gap-3 p-3">
-        {/* IMAGEM */}
         <div className="relative max-h-[110px] min-h-[110px] min-w-[110px] max-w-[110px]">
           <Image
             src={service.imageUrl}
@@ -99,11 +113,9 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
             className="rounded-xl object-cover"
           />
         </div>
-        {/* DIREITA */}
         <div className="space-y-2">
           <h3 className="tex-sm font-semibold">{service.name}</h3>
           <p className="text-sm text-gray-400">{service.description}</p>
-          {/* PRECO E BOTAO */}
           <div className="flex items-center justify-between">
             <p className="tex-sm font-bold text-gray-400">
               {Intl.NumberFormat("pt-BR", {
@@ -111,13 +123,18 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                 currency: "BRL",
               }).format(Number(service.price))}
             </p>
+            <Sheet
+              open={bookingSheetIsOpen}
+              onOpenChange={handleBookingSheetOpenChange}
+            >
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setBookingSheetIsOpen(true)}
+              >
+                Reservar
+              </Button>
 
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="secondary" size="sm">
-                  Reservar
-                </Button>
-              </SheetTrigger>
               <SheetContent className="px-0">
                 <SheetHeader className="px-5 text-left">
                   <SheetTitle className="text-xl font-bold">
@@ -132,6 +149,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                       locale={ptBR}
                       selected={selectedDay}
                       onSelect={handleDateSelect}
+                      fromDate={addDays(new Date(), 1)}
                       styles={{
                         head_cell: {
                           width: "100%",
@@ -164,7 +182,7 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                         Horários disponíveis
                       </h3>
                       <div className="flex gap-2 overflow-x-auto py-2 [&::-webkit-scrollbar]:hidden">
-                        {TIME_LIST.map((time) => (
+                        {getTimeList(dayBookings).map((time) => (
                           <Button
                             key={time}
                             variant={
@@ -217,15 +235,13 @@ const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
                 </div>
 
                 <SheetFooter className="mt-5 px-5">
-                  <SheetClose asChild>
-                    <Button
-                      onClick={handleCreateBooking}
-                      className="w-full"
-                      disabled={!selectedTime || !selectedDay}
-                    >
-                      Reservar
-                    </Button>
-                  </SheetClose>
+                  <Button
+                    onClick={handleCreateBooking}
+                    className="w-full"
+                    disabled={!selectedTime || !selectedDay}
+                  >
+                    Reservar
+                  </Button>
                 </SheetFooter>
               </SheetContent>
             </Sheet>
