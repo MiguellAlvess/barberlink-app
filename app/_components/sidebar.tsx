@@ -59,9 +59,11 @@ const Sidebar = () => {
             </Link>
           </Button>
         </SheetClose>
-        <Button className="justify-start gap-2" variant="ghost">
-          <CalendarIcon size={16} />
-          Agendamentos
+        <Button className="justify-start gap-2" variant="ghost" asChild>
+          <Link href="/bookings">
+            <CalendarIcon size={16} />
+            Agendamentos
+          </Link>
         </Button>
       </div>
       <div className="flex flex-col gap-4 border-b border-solid py-3">

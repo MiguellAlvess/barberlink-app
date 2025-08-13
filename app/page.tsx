@@ -1,26 +1,48 @@
 import Header from "./_components/header"
 import { Button } from "./_components/ui/button"
 import Image from "next/image"
-import { Card, CardContent } from "./_components/ui/card"
-import { Badge } from "./_components/ui/badge"
-import { Avatar, AvatarImage } from "./_components/ui/avatar"
 import BarbershopItem from "./_components/barbershop-item"
 import { quickSearchOptions } from "./_constants/search-options"
 import { getBarbershops } from "./_data_access/barbershops/get-barbershops"
 import { getPopularBarbershops } from "./_data_access/barbershops/get-popularbarbershops"
 import Search from "./_components/search"
 import Link from "next/link"
-import { SheetClose } from "./_components/ui/sheet"
+import { getServerSession } from "next-auth"
+import { authOptions } from "./_lib/auth"
+import { db } from "./_lib/prisma"
+import BookingItem from "./_components/booking-item"
 
 const Home = async () => {
-  const barberShops = await getBarbershops()
+  const session = await getServerSession(authOptions)
+  const barbershops = await getBarbershops()
   const popularBarbershops = await getPopularBarbershops()
+  const confirmedBookings = session
+    ? await db.booking.findMany({
+        where: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          userId: (session.user as any).id,
+          date: {
+            gte: new Date(),
+          },
+        },
+        include: {
+          service: {
+            include: {
+              barbershop: true,
+            },
+          },
+        },
+        orderBy: {
+          date: "asc",
+        },
+      })
+    : []
   return (
     <div>
       <Header />
       {/* TEXTO */}
       <div className="p-5">
-        <h2 className="text-xl font-bold">Olá, Miguel!</h2>
+        <h2 className="text-xl font-bold">Olá, {session?.user?.name}!</h2>
         <p>Domingo, 08 de agosto</p>
 
         {/* BUSCA */}
@@ -64,34 +86,19 @@ const Home = async () => {
         <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
           Agendamentos
         </h2>
-        <Card>
-          <CardContent className="flex justify-between p-0">
-            <div className="flex flex-col gap-2 py-5 pl-5">
-              <Badge className="w-fit rounded-xl">Confirmado</Badge>
-              <h3 className="font-semibold">Corte de cabelo</h3>
-
-              <div className="flex items-center gap-2">
-                <Avatar className="h6 w-6">
-                  <AvatarImage src="https://utfs.io/f/c97a2dc9-cf62-468b-a851-bfd2bdde775f-16p.png" />
-                </Avatar>
-                <p className="text-sm">Barberia Show</p>
-              </div>
-            </div>
-            <div className="flex flex-col items-center justify-center border-l-2 border-solid px-5">
-              <p className="text-sm">Agosto</p>
-              <p className="text-2xl">08</p>
-              <p className="text-sm">16:00</p>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="flex gap-3 overflow-x-auto [&::-webkit-scrollbar]:hidden">
+          {confirmedBookings.map((booking) => (
+            <BookingItem booking={booking} key={booking.id} />
+          ))}
+        </div>
 
         {/* RECOMENDADOS */}
         <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
           Recomendados
         </h2>
         <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
-          {barberShops.map((barberShops) => (
-            <BarbershopItem key={barberShops.id} barbershop={barberShops} />
+          {barbershops.map((barbershop) => (
+            <BarbershopItem key={barbershop.id} barbershop={barbershop} />
           ))}
         </div>
 
