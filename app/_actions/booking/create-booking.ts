@@ -3,6 +3,7 @@
 import { authOptions } from "@/app/_lib/auth"
 import { db } from "@/app/_lib/prisma"
 import { getServerSession } from "next-auth"
+import { revalidatePath } from "next/cache"
 
 interface createBookingParams {
   serviceId: string
@@ -22,4 +23,6 @@ export const createBooking = async (params: createBookingParams) => {
       userId: (user.user as any).id,
     },
   })
+  revalidatePath("/barbershops/[id]")
+  revalidatePath("/bookings")
 }
