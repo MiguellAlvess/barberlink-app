@@ -5,7 +5,7 @@ import { ChevronLeftIcon, MapPinIcon, MenuIcon, StarIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import PhoneItem from "../_components/phone-item"
+import PhoneItem from "../../_components/phone-item"
 import { Sheet, SheetTrigger } from "@/app/_components/ui/sheet"
 import Sidebar from "@/app/_components/sidebar"
 
