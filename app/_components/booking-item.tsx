@@ -18,21 +18,9 @@ import {
 import Image from "next/image"
 import PhoneItem from "./phone-item"
 import { Button } from "./ui/button"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "./ui/alert-dialog"
-import { toast } from "sonner"
-import { deleteBooking } from "../_actions/booking/delete-booking"
 import { useState } from "react"
 import BookingSummary from "./booking-summary"
+import { CancelBookingDialog } from "./cancel-booking-dialog"
 
 interface BookingItemProps {
   booking: Prisma.BookingGetPayload<{
@@ -50,19 +38,6 @@ const BookingItem = ({ booking }: BookingItemProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const isConfirmed = isFuture(booking.date)
 
-  const handleDialogOpenChange = (isOpen: boolean) => {
-    setIsDialogOpen(isOpen)
-  }
-  const handleCancelBooking = async () => {
-    try {
-      await deleteBooking(booking.id)
-      toast.success("Reserva cancelada com sucesso")
-      setIsDialogOpen(false)
-    } catch (error) {
-      console.error(error)
-      toast.error("Erro ao cancelar reserva")
-    }
-  }
   return (
     <Sheet>
       <SheetTrigger className="w-full min-w-[90%]">
@@ -159,42 +134,16 @@ const BookingItem = ({ booking }: BookingItemProps) => {
               </Button>
             </SheetClose>
             {isConfirmed && (
-              <AlertDialog
+              <CancelBookingDialog
+                bookingId={booking.id}
                 open={isDialogOpen}
-                onOpenChange={handleDialogOpenChange}
+                onOpenChange={setIsDialogOpen}
+                onSuccess={() => setIsDialogOpen(false)}
               >
-                <AlertDialogTrigger className="w-full" asChild>
-                  <Button variant="destructive" className="w-[50%]">
-                    Cancelar reserva
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className="w-[90%]">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Você quer cancelar sua reserva?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Ao cancelar a reserva, esta ação não poderá ser revertida
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter className="mt-2 flex w-full flex-row items-center justify-center gap-3">
-                    <AlertDialogCancel asChild>
-                      <Button className="w-[50%]" variant="outline">
-                        Cancelar
-                      </Button>
-                    </AlertDialogCancel>
-                    <AlertDialogAction asChild>
-                      <Button
-                        className="w-[50%]"
-                        variant="destructive"
-                        onClick={handleCancelBooking}
-                      >
-                        Confirmar
-                      </Button>
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+                <Button variant="destructive" className="w-[50%]">
+                  Cancelar reserva
+                </Button>
+              </CancelBookingDialog>
             )}
           </div>
         </SheetFooter>
