@@ -1,6 +1,5 @@
 import ServiceItem from "@/app/_components/service-item"
 import { Button } from "@/app/_components/ui/button"
-import { db } from "@/app/_lib/prisma"
 import { ChevronLeftIcon, MapPinIcon, MenuIcon, StarIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -8,6 +7,7 @@ import { notFound } from "next/navigation"
 import PhoneItem from "../../_components/phone-item"
 import { Sheet, SheetTrigger } from "@/app/_components/ui/sheet"
 import Sidebar from "@/app/_components/sidebar"
+import { getBarbershopById } from "@/app/_data_access/barbershop/get-barbershop-by-id"
 
 interface BarbershopPagesProps {
   params: Promise<{
@@ -17,14 +17,7 @@ interface BarbershopPagesProps {
 
 const BarbershopPage = async (props: BarbershopPagesProps) => {
   const params = await props.params
-  const barbershop = await db.barbershop.findUnique({
-    where: {
-      id: params.id,
-    },
-    include: {
-      services: true,
-    },
-  })
+  const barbershop = await getBarbershopById(params.id)
 
   if (!barbershop) {
     return notFound()
