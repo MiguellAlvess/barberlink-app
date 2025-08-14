@@ -13,6 +13,7 @@ import BookingItem from "./_components/booking-item"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { getConfirmedBookings } from "./_data_access/booking/get-confirmed-bookings"
+import SectionTitle from "./_components/section-title"
 
 const Home = async () => {
   const session = await getServerSession(authOptions)
@@ -22,7 +23,6 @@ const Home = async () => {
   return (
     <div>
       <Header />
-      {/* TEXTO */}
       <div className="p-5">
         <h2 className="text-xl font-bold">
           Olá, {session?.user ? session.user.name : "bem vindo"}
@@ -36,13 +36,9 @@ const Home = async () => {
             {format(new Date(), "MMMM", { locale: ptBR })}
           </span>
         </p>
-
-        {/* BUSCA */}
         <div className="mt-6">
           <Search />
         </div>
-
-        {/* buscar rapida */}
         <div className="mt-6 flex gap-3 overflow-x-scroll [&::-webkit-scrollbar]:hidden">
           {quickSearchOptions.map((option) => (
             <Button
@@ -63,8 +59,6 @@ const Home = async () => {
             </Button>
           ))}
         </div>
-
-        {/* BANNER */}
         <div className="relative mt-6 h-[150px] w-full">
           <Image
             src="/banner.png"
@@ -74,12 +68,11 @@ const Home = async () => {
           />
         </div>
 
-        {/* AGENDAMENTO */}
         {confirmedBookings.length > 0 && (
           <>
-            <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
-              Agendamentos
-            </h2>
+            <SectionTitle>
+              <h2>Agendamentos</h2>
+            </SectionTitle>
             <div className="flex gap-3 overflow-x-auto [&::-webkit-scrollbar]:hidden">
               {confirmedBookings.map((booking) => (
                 <BookingItem booking={booking} key={booking.id} />
@@ -88,10 +81,7 @@ const Home = async () => {
           </>
         )}
 
-        {/* RECOMENDADOS */}
-        <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
-          Recomendados
-        </h2>
+        <SectionTitle>Recomendados</SectionTitle>
         <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
           {barbershops.map((barbershop) => (
             <BarbershopItem
@@ -101,10 +91,7 @@ const Home = async () => {
           ))}
         </div>
 
-        {/* POPULARES */}
-        <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
-          Populares
-        </h2>
+        <SectionTitle>Populares</SectionTitle>
         <div className="flex gap-4 overflow-auto [&::-webkit-scrollbar]:hidden">
           {popularBarbershops.map((barberShops) => (
             <BarbershopItem key={barberShops.id} barbershop={barberShops} />

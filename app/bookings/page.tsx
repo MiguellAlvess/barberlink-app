@@ -5,6 +5,7 @@ import { authOptions } from "../_lib/auth"
 import { notFound } from "next/navigation"
 import BookingItem from "../_components/booking-item"
 import { getConfirmedBookings } from "../_data_access/booking/get-confirmed-bookings"
+import SectionTitle from "../_components/section-title"
 
 const BookingsPage = async () => {
   const session = await getServerSession(authOptions)
@@ -41,9 +42,7 @@ const BookingsPage = async () => {
         )}
         {confirmedBookings.length > 0 && (
           <>
-            <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
-              Confirmados
-            </h2>
+            <SectionTitle>Confirmados</SectionTitle>
             {confirmedBookings.map((booking) => (
               <BookingItem
                 key={booking.id}
@@ -54,9 +53,7 @@ const BookingsPage = async () => {
         )}
         {concludedBookings.length > 0 && (
           <>
-            <h2 className="mb-3 mt-6 text-xs font-bold uppercase text-gray-400">
-              Finalizados
-            </h2>
+            <SectionTitle>Finalizados</SectionTitle>
             {concludedBookings.map((booking) => (
               <BookingItem
                 key={booking.id}
