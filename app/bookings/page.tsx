@@ -4,28 +4,14 @@ import { db } from "../_lib/prisma"
 import { authOptions } from "../_lib/auth"
 import { notFound } from "next/navigation"
 import BookingItem from "../_components/booking-item"
+import { getConfirmedBookings } from "../_data_access/booking/get-confirmed-bookings"
 
 const BookingsPage = async () => {
   const session = await getServerSession(authOptions)
   if (!session?.user) {
     return notFound()
   }
-  const confirmedBookings = await db.booking.findMany({
-    where: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      userId: (session.user as any).id,
-      date: {
-        gte: new Date(),
-      },
-    },
-    include: {
-      service: {
-        include: {
-          barbershop: true,
-        },
-      },
-    },
-  })
+  const confirmedBookings = await getConfirmedBookings()
   const concludedBookings = await db.booking.findMany({
     where: {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
