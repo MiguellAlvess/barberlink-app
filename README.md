@@ -1,6 +1,8 @@
 # BarbarLink
 
-A plicação web full stack para gestão de barbearias, permitindo que usuários realizem reservas de serviços, acompanhem e gerenciem seus agendamentos, visualizando detalhes como data, horário, valor e localização da barbearia.
+Aplicação web full stack para gestão de barbearias, permitindo que usuários realizem reservas de serviços, acompanhem e gerenciem seus agendamentos, visualizando detalhes como data, horário, valor e localização da barbearia.
+
+![Banner BarberLink](public/banner.png)
 
 ## Configuração de ambiente
 
@@ -62,9 +64,44 @@ npm run dev
 - **PostgreSQL**
 - **Prisma ORM**
 - **Docker**
+- **Next Auth**
 - **Zod**
 - **React Hook Form**
 
-## Interface
+## Autenticação
 
-Aqui estão algumas imagens da interface da aplicação:
+A autenticação é realizada utilizando **NextAuth.js** com provedor do **Google**, permitindo que os usuários façam login de forma rápida e segura sem precisar criar uma senha manualmente. As credenciais do Google (Client ID e Client Secret) são armazenadas em variáveis de ambiente e configuradas no **.env**. Quando um usuário faz login, o NextAuth valida a sessão junto ao Google e gera um **JWT** que é usado para autenticar as requisições às rotas protegidas da aplicação. Esse token é gerenciado internamente pelo NextAuth e pode ser acessado através da função **getSession()** no frontend ou pelo middleware no backend, garantindo que apenas usuários autenticados possam realizar ações como criar ou gerenciar reservas.
+
+Exemplo de configuração no `.env`:
+
+```env
+GOOGLE_CLIENT_ID=seu_client_id
+GOOGLE_CLIENT_SECRET=seu_client_secret
+NEXTAUTH_URL=http://localhost:3000
+```
+
+## Deploy
+
+A aplicação está hospedada na Vercel, aproveitando a integração nativa com Next.js para deploys rápidos e escaláveis, enquanto o banco de dados PostgreSQL utiliza o Neon.tech, uma solução serverless que simplifica o gerenciamento e oferece escalabilidade automática na nuvem.
+
+## Vídeo
+
+Vídeo mostrando funcionalidades e interfaces do sistema:
+
+## Funcionalidades atuais
+
+- ✅ **Reserva de serviços:** os usuários podem selecionar e reservar serviços das barbearias
+- ✅ **Gerenciamento de agendamentos:** acompanhamento detalhado de reservas, incluindo data, horário e valor
+
+- ✅ **Autenticação:** login rápido com Google via NextAuth.js
+- ✅ **Busca rápida:** filtro de serviços disponível para facilitar a seleção
+
+---
+
+## Melhorias futuras
+
+- ⭐ **Sistema de avaliações:** permitir que usuários avaliem os serviços
+- 🎛️ **Painel de controle:** dashboard administrativo para barbearias
+- 📈 **Dashboard visual:** métricas de desempenho e agendamentos
+- 🗺️ **Barbearias próximas:** localização e proximidade com o usuário
+- 🧭 **Integração com mapas:** rotas e navegação até a barbearia
