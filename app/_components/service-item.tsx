@@ -14,47 +14,21 @@ import {
 import { Calendar } from "./ui/calendar"
 import { ptBR } from "date-fns/locale"
 import { useEffect, useMemo, useState } from "react"
-import { isPast, isToday, set } from "date-fns"
+import { set } from "date-fns"
 
 import { useSession } from "next-auth/react"
 import { toast } from "sonner"
 import { getBookings } from "../_data_access/booking/get-bookings"
 import { createBooking } from "../_actions/booking/create-booking"
-import { TIME_LIST } from "../_constants/time-list"
 import { Dialog, DialogContent } from "./ui/dialog"
 import SignInDialog from "./sign-in-dialog"
 import BookingSummary from "./booking-summary"
 import { useRouter } from "next/navigation"
+import { getTimeList } from "../_helpers/get-time-list"
 
 interface ServiceItemProps {
   service: BarbershopService
   barbershop: Pick<Barbershop, "name">
-}
-
-interface GetTimeListProps {
-  bookings: Booking[]
-  selectedDay: Date
-}
-const getTimeList = ({ bookings, selectedDay }: GetTimeListProps) => {
-  return TIME_LIST.filter((time) => {
-    const hour = Number(time.split(":")[0])
-    const minutes = Number(time.split(":")[1])
-    const isOnThePast = isPast(
-      set(new Date(), { hours: hour, minutes: minutes }),
-    )
-    if (isOnThePast && isToday(selectedDay)) {
-      return false
-    }
-    const hasBookingOnCurrentTime = bookings.some(
-      (booking) =>
-        booking.date.getHours() === hour &&
-        booking.date.getMinutes() === minutes,
-    )
-    if (hasBookingOnCurrentTime) {
-      return false
-    }
-    return true
-  })
 }
 
 const ServiceItem = ({ service, barbershop }: ServiceItemProps) => {
