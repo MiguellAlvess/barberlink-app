@@ -4,12 +4,13 @@ import Search from "../_components/search"
 import { db } from "../_lib/prisma"
 
 interface BarbershopPagesProps {
-  searchParams: {
+  searchParams: Promise<{
     search: string
-  }
+  }>
 }
 
-const BarbershopsPage = async ({ searchParams }: BarbershopPagesProps) => {
+const BarbershopsPage = async (props: BarbershopPagesProps) => {
+  const searchParams = await props.searchParams;
   const barbershops = await db.barbershop.findMany({
     where: {
       OR: [

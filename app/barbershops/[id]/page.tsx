@@ -10,12 +10,13 @@ import { Sheet, SheetTrigger } from "@/app/_components/ui/sheet"
 import Sidebar from "@/app/_components/sidebar"
 
 interface BarbershopPagesProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
-const BarbershopPage = async ({ params }: BarbershopPagesProps) => {
+const BarbershopPage = async (props: BarbershopPagesProps) => {
+  const params = await props.params;
   const barbershop = await db.barbershop.findUnique({
     where: {
       id: params.id,
