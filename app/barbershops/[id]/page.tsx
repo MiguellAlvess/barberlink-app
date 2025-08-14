@@ -16,7 +16,7 @@ interface BarbershopPagesProps {
 }
 
 const BarbershopPage = async (props: BarbershopPagesProps) => {
-  const params = await props.params;
+  const params = await props.params
   const barbershop = await db.barbershop.findUnique({
     where: {
       id: params.id,
@@ -84,8 +84,8 @@ const BarbershopPage = async (props: BarbershopPagesProps) => {
         <div className="space-y-3">
           {barbershop.services.map((service) => (
             <ServiceItem
-              service={service}
-              barbershop={barbershop}
+              service={JSON.parse(JSON.stringify(service))}
+              barbershop={JSON.parse(JSON.stringify(barbershop))}
               key={service.id}
             />
           ))}
