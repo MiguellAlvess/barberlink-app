@@ -88,6 +88,8 @@ A aplicação está hospedada na Vercel, aproveitando a integração nativa com 
 
 Vídeo mostrando funcionalidades e interfaces do sistema:
 
+https://github.com/user-attachments/assets/3fdcf1a1-fab1-4307-9d2c-b914219a6074
+
 ## Funcionalidades atuais
 
 - ✅ **Reserva de serviços:** os usuários podem selecionar e reservar serviços das barbearias
