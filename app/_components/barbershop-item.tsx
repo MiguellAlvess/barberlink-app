@@ -13,8 +13,7 @@ const BarbershopItem = ({ barbershop }: BarbershopProps) => {
   return (
     <Card className="min-w-[165px] rounded-2xl p-0">
       <CardContent className="p-0 px-1 pt-1">
-        {/* imagem */}
-        <div className="relative h-[159px] w-full">
+        <div className="relative h-[160px] w-full">
           <Image
             fill
             className="rounded-2xl object-cover"
@@ -29,8 +28,6 @@ const BarbershopItem = ({ barbershop }: BarbershopProps) => {
             <p className="text-xs font-semibold">5.0</p>
           </Badge>
         </div>
-
-        {/* texto */}
         <div className="px-1 py-3">
           <h3 className="truncate font-semibold">{barbershop.name}</h3>
           <p className="truncate text-sm text-gray-400">{barbershop.address}</p>
